@@ -21,28 +21,18 @@ public class Main {
             if (conn != null) {
 
                 Statement sta = conn.createStatement();
-                String Sql1 = "select top 20000 case When u.salary < u.ExpectedSalary Then u.salary Else u.ExpectedSalary End As Salary, u.salary,u.ExpectedSalary,u.userid, u.pictureId,p.Image from UserInfo u with (NOLOCK)  join Picture p on u.userId = p.UserId where (u.salary between 1 and 12000 or u.ExpectedSalary between 1 and 12000) and u.salary>1000 and u.ExpectedSalary>1000 and u.pictureId != 15 order by u.userId desc";
-                String Sql = "select top 20000 case When u.salary < u.ExpectedSalary Then u.salary Else u.ExpectedSalary End As TheMin, u.salary,u.ExpectedSalary,u.userid, u.pictureId,p.Image from UserInfo u with (NOLOCK)  join Picture p on u.userId = p.UserId where u.salary>12000 and u.ExpectedSalary>12000 and u.pictureId!=15 order by u.userId desc";
+              //  Uncomment the below line and comment out next line to download below 12000 images.
+              // String Sql = "select top 20000 case When u.salary < u.ExpectedSalary Then u.salary Else u.ExpectedSalary End As MinSalary, u.salary,u.ExpectedSalary,u.jobCategory, u.userid, u.pictureId,p.Image from UserInfo u with (NOLOCK)  join Picture p on u.userId = p.UserId where (u.salary between 1 and 12000 or u.ExpectedSalary between 1 and 12000) and u.salary>1000 and u.ExpectedSalary>1000 and u.pictureId != 15 and p.Image IS NOT NULL order by u.userId desc";
+                String Sql = "select top 20000 case When u.salary < u.ExpectedSalary Then u.salary Else u.ExpectedSalary End As MinSalary, u.salary,u.ExpectedSalary,u.userid, u.pictureId,p.Image from UserInfo u with (NOLOCK)  join Picture p on u.userId = p.UserId where u.salary>12000 and u.ExpectedSalary>12000 and u.pictureId!=15 and p.image IS NOT NULL order by u.userId desc";
                 ResultSet rs = sta.executeQuery(Sql);
-
-
-                //sort for most recent
-                //get 20000 records
-                //over 12000 and under 12000
-                //ship
-
-                //try face cropping
-                //ship
-
-
-
-                //userid-category-exactSalary
 
                 while (rs.next()) {
                     InputStream in = new ByteArrayInputStream(rs.getBytes("Image"));
                     BufferedImage bImageFromConvert = ImageIO.read(in);
                     try {
-                        ImageIO.write(bImageFromConvert, "jpg", new File("tf_files/flower_photos/above_12000/Salary_" + rs.getString("Salary") + "_UserId_" +rs.getString("UserId")+"_PictureId_" +rs.getString("pictureId")+ ".jpg"));
+                        //Will need to have the folder tf_files/flower_photos/above_12000/ in the system to download the files.
+                        //In case of below_12000 the folder should be tf_files/flower_photos/below_12000/                       
+                        ImageIO.write(bImageFromConvert, "jpg", new File("tf_files/flower_photos/above_12000/Salary_" + rs.getString("MinSalary") + "_UserId_" +rs.getString("UserId")+"_PictureId_" +rs.getString("pictureId")+ ".jpg"));
 
                     }catch (Exception e){
                         e.printStackTrace();
